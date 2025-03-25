@@ -4,8 +4,10 @@ from discord.ext import commands
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pytz import timezone
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+load_dotenv()
 
-TOKEN = "MTM1NDEyNzY0MzEyMDg5ODExOQ.G8C1sc.UZS_GS8spIcDhLUcf_YGUW-Xek7FXlhypB7f8s"
+TOKEN = os.getenv("DISCORD_TOKEN")
 CHANNEL_ID = 1354128166561517591  # Replace with your channel ID
 
 eastern = timezone("America/New_York")
