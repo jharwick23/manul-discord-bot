@@ -5,7 +5,6 @@ from pytz import timezone
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-CHANNEL_ID = 262651415862837258
 eastern = timezone("America/New_York")
 
 intents = discord.Intents.default()
@@ -28,9 +27,19 @@ def write_streak(count):
 @bot.event
 async def on_ready():
     print(f"✅ Logged in as {bot.user}")
-    channel = bot.get_channel(CHANNEL_ID)
+
+    # Dynamically find a text channel where the bot can send messages
+    channel = None
+    for guild in bot.guilds:
+        for text_channel in guild.text_channels:
+            if text_channel.permissions_for(guild.me).send_messages:
+                channel = text_channel
+                break
+        if channel:
+            break
+
     if channel is None:
-        print("❌ Channel not found.")
+        print("❌ No suitable channel found.")
         await bot.close()
         return
 
@@ -50,7 +59,7 @@ async def on_ready():
         file = discord.File(img)
         await channel.send(f"📅 **Day {day_count} of the Manul Streak!**\n📸 **Manul of the Day #MOTD** 🐾\n*{fact}*", file=file)
 
-    print("✅ MOTD sent! Shutting down bot.")
+    print(f"✅ Posted to {channel.guild.name} > #{channel.name}. Shutting down.")
     await bot.close()
 
 bot.run(TOKEN)
