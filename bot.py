@@ -5,6 +5,7 @@ from pytz import timezone
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+CHANNEL_ID = 262651415862837258
 eastern = timezone("America/New_York")
 
 intents = discord.Intents.default()
@@ -27,19 +28,9 @@ def write_streak(count):
 @bot.event
 async def on_ready():
     print(f"✅ Logged in as {bot.user}")
-
-    # Dynamically find the first channel it can post in
-    channel = None
-    for guild in bot.guilds:
-        for text_channel in guild.text_channels:
-            if text_channel.permissions_for(guild.me).send_messages:
-                channel = text_channel
-                break
-        if channel:
-            break
-
+    channel = bot.get_channel(CHANNEL_ID)
     if channel is None:
-        print("❌ No suitable channel found.")
+        print("❌ Channel not found.")
         await bot.close()
         return
 
